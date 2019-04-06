@@ -1,4 +1,6 @@
-function fibb(iterations) {
+import { runTests } from "../common/tests.js"
+
+function fibonacci(iterations) {
     let val = 1;
     let last = 0;
 
@@ -15,8 +17,7 @@ function fibb(iterations) {
     return val;
 }
 
-[19, 20, 21, 22, 23].forEach(desiredSolution => {
-    console.time(`fibb(${desiredSolution})`);
-    console.log(fibb(desiredSolution))
-    console.timeEnd(`fibb(${desiredSolution})`);
-})
+async function main() {
+    runTests(fibonacci);
+}
+main()
