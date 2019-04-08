@@ -37,7 +37,7 @@ build-fibb: build-deps clean-fibb make-fibb
 	cp ./src/htmlTemplates/indexChild.html ./dist/fibb/wasm/index.html
 	cp ./src/htmlTemplates/indexPthreads.html ./dist/fibb/wasm-pthread/index.html
 	cp ./src/htmlTemplates/indexChild.html ./dist/fibb/js/index.html
-	cp -r ./src/fibb/common/ ./dist/fibb
+	cp -r ./src/fibb/common ./dist/fibb/
 
 serve-fibb: build-fibb
 	http-server dist
@@ -59,7 +59,7 @@ build-alvaro: build-deps clean-alvaro make-alvaro
 	cp ./src/htmlTemplates/indexChild.html ./dist/alvaro/wasm/index.html
 	cp ./src/htmlTemplates/indexPthreads.html ./dist/alvaro/wasm-pthread/index.html
 	cp ./src/htmlTemplates/indexChild.html ./dist/alvaro/js/index.html
-	cp -r ./src/alvaro/common/ ./dist/alvaro
+	cp -r ./src/alvaro/common ./dist/alvaro/
 
 serve-alvaro: build-alvaro
 	http-server dist
@@ -81,7 +81,7 @@ build-sean: build-deps clean-sean make-sean
 	cp ./src/htmlTemplates/indexChild.html ./dist/sean/wasm/index.html
 	cp ./src/htmlTemplates/indexPthreads.html ./dist/sean/wasm-pthread/index.html
 	cp ./src/htmlTemplates/indexChild.html ./dist/sean/js/index.html
-	cp -r ./src/sean/common/ ./dist/sean
+	cp -r ./src/sean/common ./dist/sean/
 
 serve-sean: build-sean
 	http-server dist
@@ -103,7 +103,7 @@ build-devyani: build-deps clean-devyani make-devyani
 	cp ./src/htmlTemplates/indexChild.html ./dist/devyani/wasm/index.html
 	cp ./src/htmlTemplates/indexPthreads.html ./dist/devyani/wasm-pthread/index.html
 	cp ./src/htmlTemplates/indexChild.html ./dist/devyani/js/index.html
-	cp -r ./src/devyani/common/ ./dist/devyani
+	cp -r ./src/devyani/common ./dist/devyani/
 
 serve-devyani: build-devyani
 	http-server dist
