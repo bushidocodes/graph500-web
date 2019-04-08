@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<title>Threads test</title>
+
+<style>
+    main {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        grid-gap: 5px;
+    }
+
+    .card {
+        border: 2px solid #e7e7e7;
+        border-radius: 4px;
+        padding: .5rem;
+    }
+
+    .card img {
+        width: 100%;
+    }
+
+    header h1 {
+        text-align: center;
+    }
+</style>
+
+<body>
+    <header>
+        <h1>Big Data Algorithms on the Web</h1>
+    </header>
+    <main>
+        <a href="./fibb/js/">
+            <div class="card">
+                <img src="./resources/js.png" />
+                <h3>Fibonacci</h3>
+            </div>
+        </a>
+        <a href="./fibb/wasm/">
+            <div class="card">
+                <img src="./resources/wasm.png" />
+                <h3>Serial Fibonacci</h3>
+            </div>
+        </a>
+        <a href="./fibb/wasm-pthread/">
+            <div class="card">
+                <img src="./resources/wasm.png" />
+                <h3>Parallel Fibonacci</h3>
+            </div>
+        </a>
+        <a href="./alvaro/js/">
+            <div class="card">
+                <img src="./resources/js.png" />
+                <h3>Alvaro</h3>
+            </div>
+        </a>
+        <a href="./alvaro/wasm/">
+            <div class="card">
+                <img src="./resources/wasm.png" />
+                <h3>Serial Alvaro</h3>
+            </div>
+        </a>
+        <a href="./alvaro/wasm-pthread/">
+            <div class="card">
+                <img src="./resources/wasm.png" />
+                <h3>Parallel Alvaro</h3>
+            </div>
+        </a>
+        <a href="./devyani/js/">
+            <div class="card">
+                <img src="./resources/js.png" />
+                <h3>Devyani</h3>
+            </div>
+        </a>
+        <a href="./devyani/wasm/">
+            <div class="card">
+                <img src="./resources/wasm.png" />
+                <h3>Serial Devyani</h3>
+            </div>
+        </a>
+        <a href="./devyani/wasm-pthread/">
+            <div class="card">
+                <img src="./resources/wasm.png" />
+                <h3>Parallel Devyani</h3>
+            </div>
+        </a>
+        <a href="./sean/js/">
+            <div class="card">
+                <img src="./resources/js.png" />
+                <h3>Sean</h3>
+            </div>
+        </a>
+        <a href="./sean/wasm/">
+            <div class="card">
+                <img src="./resources/wasm.png" />
+                <h3>Serial Sean</h3>
+            </div>
+        </a>
+        <a href="./sean/wasm-pthread/">
+            <div class="card">
+                <img src="./resources/wasm.png" />
+                <h3>Parallel Sean</h3>
+            </div>
+        </a>
+    </main>
+</body>
+
+</html>
