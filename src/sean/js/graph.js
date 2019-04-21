@@ -14,23 +14,11 @@ export class Graph {
     }
 
     getNeighbors(source) {
-        return this.data.getColumn(source);
+        return Array.from(this.data.getColumn(source).entries()).filter(([k, v]) => v).map(([k, v]) => k);
     }
 
     hasSourceVertex(source) {
-        return this.data.hasColumnIndex(source);
-    }
-
-    getSourceVertices() {
-        return this.data.getColumnIndices();
-    }
-
-    printGraph() {
-        for (let sourceVertex of this.getSourceVertices()) {
-            for (let [destinationVertex] of this.getNeighbors(sourceVertex)) {
-                console.log(`${sourceVertex} -> ${destinationVertex}`)
-            }
-        }
+        return this.data.hasColumn(source);
     }
 
     bfs(start) {
@@ -39,27 +27,24 @@ export class Graph {
             return;
         }
         const queue = [];
-        const isDiscovered = {}
+        const isDiscovered = new Set();
         const hasParent = {}
         queue.push(start);
         isDiscovered[start] = true;
         hasParent[start] = start;
 
-        // Find a connected component...
+        // Find a connected component... but the edgeset is fully connected
         while (queue.length > 0) {
             let vertex = queue.shift();
-            for (let [neighbor] of this.getNeighbors(vertex)) {
-                if (!isDiscovered[neighbor]) {
+            this.getNeighbors(vertex).forEach((neighbor => {
+                if (isDiscovered.has(neighbor) === false) {
                     queue.push(neighbor);
-                    isDiscovered[neighbor] = true;
+                    isDiscovered.add(neighbor);
                     hasParent[neighbor] = vertex;
                 }
-            }
+            }));
         }
         return hasParent;
-        // for (let [child, parent] of Object.entries(hasParent)) {
-        //     console.log(`${child} has parent ${parent}`)
-        // }
     }
 }
 
@@ -74,6 +59,10 @@ export function createGraph(isDirected) {
 
 export function insertEdge(source, destination) {
     myGraph.insertEdge(source, destination);
+}
+
+export function compressData() {
+    myGraph.data.generateCSR();
 }
 
 export function runBFS(root) {
