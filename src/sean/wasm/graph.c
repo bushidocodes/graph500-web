@@ -79,6 +79,10 @@ void insert_edge(graph *g, int32_t source, int32_t destination, bool is_directed
     {
         printf("Successfully alloced.\n");
     }
+    else
+    {
+        printf("Malloc failed!");
+    }
 
     new_edge->destination = destination;
     new_edge->next = g->edges[source];
