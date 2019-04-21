@@ -11,7 +11,7 @@ export async function runTests(createGraph, insertEdge, runBFS, getParent, compr
     console.log("Creating Graph")
     createGraph();
     console.log("Downloading Edgelist")
-    const response = await fetch("../../16x16_edgelist.txt");
+    const response = await fetch("../../resources/16x16_edgelist.txt");
     const edgelist = await response.text();
     console.log("Adding Edges to Graph")
     const edges = edgelist.split("\n");
