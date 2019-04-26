@@ -2,17 +2,27 @@
 
 ## Define compiler and flags
 CC=emcc
-CCFLAGSBASE= -O2 -s WASM=1 
-CCFLAGS= ${CCFLAGSBASE} -s SIDE_MODULE=1 
-CCFLAGSPTHREADS= ${CCFLAGSBASE} -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 
+CCFLAGSBASE= -O0 -g \
+	-s STRICT=1 \
+	-s MALLOC=dlmalloc \
+	-s WASM=1
+CCFLAGS= ${CCFLAGSBASE} \
+	-s SIDE_MODULE=1 
+CCFLAGSBFS= ${CCFLAGSBASE} \
+	-s ALLOW_MEMORY_GROWTH=1 \
+	-s ASSERTIONS=1  \
+	-s EXPORTED_FUNCTIONS='["_createGraph", "_insertEdge", "_runBFS", "_getParent"]' \
+	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
+	-s SAFE_HEAP=1 #\
+	-s TOTAL_MEMORY=1999962112
+CCFLAGSPTHREADS= ${CCFLAGSBASE} \
+	-s USE_PTHREADS=1 \
+	-s PTHREAD_POOL_SIZE=4 
+
 
 all: build
 
-clean-dist: 
-	rm -rf ./dist
-
 make-dist:
-	mkdir -p ./dist
 	mkdir -p ./dist/resources
 
 build-deps: make-dist
@@ -74,11 +84,11 @@ make-sean:
 	mkdir -p ./dist/sean/js
 
 build-sean: build-deps clean-sean make-sean
-	$(CC) ./src/sean/wasm/main.c -o ./dist/sean/wasm/main.wasm $(CCFLAGS)
-	$(CC) ./src/sean/wasm-pthread/main.c -o ./dist/sean/wasm-pthread/main.js $(CCFLAGSPTHREADS)
-	cp ./src/sean/js/main.js ./dist/sean/js/main.js
+	$(CC) ./src/sean/wasm/main.c -o ./dist/sean/wasm/emscripten.js $(CCFLAGSBFS) 
+	# $(CC) ./src/sean/wasm-pthread/main.c -o ./dist/sean/wasm-pthread/main.js $(CCFLAGSPTHREADS) 
+	cp -r ./src/sean/js ./dist/sean
 	cp ./src/sean/wasm/main.js ./dist/sean/wasm/main.js
-	cp ./src/htmlTemplates/indexChild.html ./dist/sean/wasm/index.html
+	cp ./src/htmlTemplates/indexGlueCode.html ./dist/sean/wasm/index.html
 	cp ./src/htmlTemplates/indexPthreads.html ./dist/sean/wasm-pthread/index.html
 	cp ./src/htmlTemplates/indexChild.html ./dist/sean/js/index.html
 	cp -r ./src/sean/common ./dist/sean/
