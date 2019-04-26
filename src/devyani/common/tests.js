@@ -1,17 +1,25 @@
-export function runTests(kruskal) {
-    const nodes = ["A", "B", "C", "D", "E", "F", "G"];
+// export function runTests(kruskal) {
+export function runTests(init, insertadjver, kruskal, printResults) {
+    init();
+    // const nodes = [0, 1, 2, 3, 4, 5, 6];
     const edges = [
-        ["A", "B", 7],
-        ["A", "D", 5],
-        ["B", "C", 8],
-        ["B", "D", 9],
-        ["B", "E", 7],
-        ["C", "E", 5],
-        ["D", "E", 15],
-        ["D", "F", 6],
-        ["E", "F", 8],
-        ["E", "G", 9],
-        ["F", "G", 11]
+        [0, 1, 7],
+        [0, 3, 5],
+        [1, 2, 8],
+        [1, 3, 9],
+        [1, 4, 7],
+        [2, 4, 5],
+        [3, 4, 15],
+        [3, 5, 6],
+        [4, 5, 8],
+        [4, 6, 9],
+        [5, 6, 11]
     ];
-    console.log(kruskal(nodes, edges));
+    edges.forEach(([source, destination, weight]) =>
+        insertadjver(source, destination, weight)
+    )
+    kruskal();
+    printResults();
+
+    // console.log(kruskal(nodes, edges));
 }

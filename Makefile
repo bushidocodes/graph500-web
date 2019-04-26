@@ -5,7 +5,7 @@ CC=emcc
 CCFLAGSBASE= -O0 -g \
 	-s STRICT=1 \
 	-s MALLOC=dlmalloc \
-	-s WASM=1
+	-s WASM=1 
 CCFLAGS= ${CCFLAGSBASE} \
 	-s SIDE_MODULE=1 
 CCFLAGSBFS= ${CCFLAGSBASE} \
@@ -15,6 +15,12 @@ CCFLAGSBFS= ${CCFLAGSBASE} \
 	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
 	-s SAFE_HEAP=1 #\
 	-s TOTAL_MEMORY=1999962112
+CCFLAGSKRUSKAL= ${CCFLAGSBASE} \
+	-s ALLOW_MEMORY_GROWTH=1 \
+	-s ASSERTIONS=1  \
+	-s EXPORTED_FUNCTIONS='["_init", "_insertadjver", "_kruskal", "_printResults"]' \
+	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
+	-s SAFE_HEAP=1
 CCFLAGSPTHREADS= ${CCFLAGSBASE} \
 	-s USE_PTHREADS=1 \
 	-s PTHREAD_POOL_SIZE=4 
@@ -106,11 +112,11 @@ make-devyani:
 	mkdir -p ./dist/devyani/js
 
 build-devyani: build-deps clean-devyani make-devyani
-	$(CC) ./src/devyani/wasm/main.c -o ./dist/devyani/wasm/main.wasm $(CCFLAGS)
-	$(CC) ./src/devyani/wasm-pthread/main.c -o ./dist/devyani/wasm-pthread/main.js $(CCFLAGSPTHREADS)
-	cp ./src/devyani/js/main.js ./dist/devyani/js/main.js
+	$(CC) ./src/devyani/wasm/main.c -o ./dist/devyani/wasm/emscripten.js $(CCFLAGSKRUSKAL)
+	# $(CC) ./src/devyani/wasm-pthread/main.c -o ./dist/devyani/wasm-pthread/main.js $(CCFLAGSPTHREADS)
+	cp -r ./src/devyani/js ./dist/devyani
 	cp ./src/devyani/wasm/main.js ./dist/devyani/wasm/main.js
-	cp ./src/htmlTemplates/indexChild.html ./dist/devyani/wasm/index.html
+	cp ./src/htmlTemplates/indexGlueCode.html ./dist/devyani/wasm/index.html
 	cp ./src/htmlTemplates/indexPthreads.html ./dist/devyani/wasm-pthread/index.html
 	cp ./src/htmlTemplates/indexChild.html ./dist/devyani/js/index.html
 	cp -r ./src/devyani/common ./dist/devyani/
