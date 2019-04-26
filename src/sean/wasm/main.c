@@ -16,8 +16,9 @@ int32_t has_parent[MAXV + 1];
 void createGraph()
 {
     printf("Start Create Graph\n");
-    graph *g = malloc(sizeof(graph));
-    initialize_graph(g, false);
+    myGraph = malloc(sizeof(graph));
+    initialize_graph(myGraph, false);
+    printf("Graph Created!\n");
 }
 
 void insertEdge(int32_t source, int32_t destination)

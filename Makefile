@@ -2,13 +2,25 @@
 
 ## Define compiler and flags
 CC=emcc
-CCFLAGSBASE= -O1 -s WASM=1 -g
-CCFLAGS= ${CCFLAGSBASE} -s SIDE_MODULE=1 
-CCFLAGSBFS= ${CCFLAGSBASE} -s 'EXTRA_EXPORTED_RUNTIME_METHODS=["ccall", "cwrap"]' -s EXPORTED_FUNCTIONS='["_createGraph", "_insertEdge", "_runBFS", "_getParent"]' -s ASSERTIONS=1  -s ALLOW_MEMORY_GROWTH=1 
-CCFLAGSPTHREADS= ${CCFLAGSBASE} -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 
-# -s SAFE_HEAP=1 -s TOTAL_MEMORY=1999962112
-all: build
+CCFLAGSBASE= -O0 -g \
+	-s STRICT=1 \
+	-s MALLOC=dlmalloc \
+	-s WASM=1
+CCFLAGS= ${CCFLAGSBASE} \
+	-s SIDE_MODULE=1 
+CCFLAGSBFS= ${CCFLAGSBASE} \
+	-s ALLOW_MEMORY_GROWTH=1 \
+	-s ASSERTIONS=1  \
+	-s EXPORTED_FUNCTIONS='["_createGraph", "_insertEdge", "_runBFS", "_getParent"]' \
+	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
+	-s SAFE_HEAP=1 #\
+	-s TOTAL_MEMORY=1999962112
+CCFLAGSPTHREADS= ${CCFLAGSBASE} \
+	-s USE_PTHREADS=1 \
+	-s PTHREAD_POOL_SIZE=4 
 
+
+all: build
 
 make-dist:
 	mkdir -p ./dist/resources

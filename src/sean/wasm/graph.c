@@ -41,13 +41,10 @@ void initialize_graph(graph *g, bool directed)
     // Using memset to zero out an array
     for (int32_t i = 0; i <= MAXV; i++)
     {
-        for (int32_t j = 0; j <= MAXV; j++)
-        {
-            g->edges[i] = NULL;
-            g->degree[i] = 0;
-        }
+        g->edges[i] = NULL;
+        g->degree[i] = 0;
     }
-    memset(g->degree, 0, (MAXV + 1) * sizeof(int32_t));
+
     g->number_vertices = 0;
     g->number_edges = 0;
     g->is_directed = directed;
@@ -71,21 +68,23 @@ void read_graph(graph *g, bool is_directed)
 // Inserts an edge from source to destination in the adjascency list of graph g. If the edge is not directed, it adds source -> destination and destination -> but only increments th edge count once.
 void insert_edge(graph *g, int32_t source, int32_t destination, bool is_directed)
 {
-    printf("Insert %d %d\n", source, destination);
+    // printf("Insert %d %d\n", source, destination);
 
-    edge *new_edge;                  /* temporary pointer */
-    new_edge = malloc(sizeof(edge)); /* allocate edge storage */
-    if (new_edge != NULL)
-    {
-        printf("Successfully alloced.\n");
-    }
-    else
+    int32_t max = source > destination ? source : destination;
+
+    if (max > g->number_vertices)
+        g->number_vertices = max;
+
+    edge *new_edge;                          /* temporary pointer */
+    new_edge = (edge *)malloc(sizeof(edge)); /* allocate edge storage */
+    if (new_edge == NULL)
     {
         printf("Malloc failed!");
     }
 
     new_edge->destination = destination;
-    new_edge->next = g->edges[source];
+    if (g->edges[source] != NULL)
+        new_edge->next = g->edges[source];
 
     g->edges[source] = new_edge; //68001 is max
     g->degree[source]++;

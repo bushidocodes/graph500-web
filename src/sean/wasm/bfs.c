@@ -9,6 +9,7 @@
 
 // void initialize_search(graph *g);
 void bfs(graph *g, int32_t start, bool is_discovered[MAXV + 1], int32_t has_parent[MAXV + 1]);
+void print_parents(graph *g, int32_t has_parent[MAXV + 1]);
 
 void bfs(graph *g, int32_t start, bool is_discovered[MAXV + 1], int32_t has_parent[MAXV + 1])
 {
