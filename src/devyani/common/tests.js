@@ -1,7 +1,17 @@
-export function runTests(fibonacci) {
-    [19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].forEach(desiredSolution => {
-        console.time(`fibonacci(${desiredSolution})`);
-        console.log(fibonacci(desiredSolution))
-        console.timeEnd(`fibonacci(${desiredSolution})`);
-    })
+export function runTests(kruskal) {
+    const nodes = ["A", "B", "C", "D", "E", "F", "G"];
+    const edges = [
+        ["A", "B", 7],
+        ["A", "D", 5],
+        ["B", "C", 8],
+        ["B", "D", 9],
+        ["B", "E", 7],
+        ["C", "E", 5],
+        ["D", "E", 15],
+        ["D", "F", 6],
+        ["E", "F", 8],
+        ["E", "G", 9],
+        ["F", "G", 11]
+    ];
+    console.log(kruskal(nodes, edges));
 }

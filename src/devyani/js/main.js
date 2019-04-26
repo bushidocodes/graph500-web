@@ -1,23 +1,26 @@
 import { runTests } from "../common/tests.js"
 
-function fibonacci(iterations) {
-    let val = 1;
-    let last = 0;
+function kruskal(nodes, edges) {
+    const mst = [];
+    let forest = nodes.map(node => [node])
+    edges.sort((a, b) => a[2] - b[2])
+    while (forest.length > 1) {
+        const edge = edges.pop();
+        const [n1, n2, weight] = edge;
+        const t1 = forest.filter(tree => tree.includes(n1))[0];
+        const t2 = forest.filter(tree => tree.includes(n2))[0];
 
-    if (iterations == 0) {
-        return 0;
+        if (t1 != t2) {
+            forest = forest.filter(t => t[0] != t1[0] && t[0] != t2[0]);
+            const union = [...t1, ...t2];
+            forest.push(union);
+            mst.push(edge);
+        }
     }
-    for (let i = 1; i < iterations; i++) {
-        let seq;
-
-        seq = val + last;
-        last = val;
-        val = seq;
-    }
-    return val;
+    return mst;
 }
 
 async function main() {
-    runTests(fibonacci);
+    runTests(kruskal);
 }
 main()
