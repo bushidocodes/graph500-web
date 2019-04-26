@@ -21,6 +21,12 @@ CCFLAGSKRUSKAL= ${CCFLAGSBASE} \
 	-s EXPORTED_FUNCTIONS='["_init", "_insertadjver", "_kruskal", "_printResults"]' \
 	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
 	-s SAFE_HEAP=1
+CCFLAGSSTRASSENS= ${CCFLAGSBASE} \
+	-s ALLOW_MEMORY_GROWTH=1 \
+	-s ASSERTIONS=1  \
+	-s EXPORTED_FUNCTIONS='["_matrixMultiplication"]' \
+	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
+	-s SAFE_HEAP=1
 CCFLAGSPTHREADS= ${CCFLAGSBASE} \
 	-s USE_PTHREADS=1 \
 	-s PTHREAD_POOL_SIZE=4 
@@ -68,11 +74,11 @@ make-alvaro:
 	mkdir -p ./dist/alvaro/js
 
 build-alvaro: build-deps clean-alvaro make-alvaro
-	$(CC) ./src/alvaro/wasm/main.c -o ./dist/alvaro/wasm/main.wasm $(CCFLAGS)
-	$(CC) ./src/alvaro/wasm-pthread/main.c -o ./dist/alvaro/wasm-pthread/main.js $(CCFLAGSPTHREADS)
-	cp ./src/alvaro/js/main.js ./dist/alvaro/js/main.js
+	$(CC) ./src/alvaro/wasm/main.c -o ./dist/alvaro/wasm/emscripten.js $(CCFLAGSSTRASSENS)
+	# $(CC) ./src/alvaro/wasm-pthread/main.c -o ./dist/alvaro/wasm-pthread/main.js $(CCFLAGSPTHREADS)
+	cp -r ./src/alvaro/js ./dist/alvaro
 	cp ./src/alvaro/wasm/main.js ./dist/alvaro/wasm/main.js
-	cp ./src/htmlTemplates/indexChild.html ./dist/alvaro/wasm/index.html
+	cp ./src/htmlTemplates/indexGlueCode.html ./dist/alvaro/wasm/index.html
 	cp ./src/htmlTemplates/indexPthreads.html ./dist/alvaro/wasm-pthread/index.html
 	cp ./src/htmlTemplates/indexChild.html ./dist/alvaro/js/index.html
 	cp -r ./src/alvaro/common ./dist/alvaro/
