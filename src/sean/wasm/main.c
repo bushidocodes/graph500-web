@@ -28,6 +28,11 @@ void insertEdge(int32_t source, int32_t destination)
 
 void runBFS(int32_t root)
 {
+    for (int i = 0; i < MAXV + 1; i++)
+    {
+        is_discovered[i] = 0;
+        has_parent[i] = -1;
+    }
     bfs(myGraph, root, is_discovered, has_parent);
 }
 
