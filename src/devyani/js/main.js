@@ -19,7 +19,7 @@ function kruskal() {
     while (forest.length > 1) {
         const edge = edges.pop();
         const [n1, n2, _] = edge;
-        const t1 = f tree => tree.includes(n1))[0];
+        const t1 = forest.filter(tree => tree.includes(n1))[0];
         const t2 = forest.filter(tree => tree.includes(n2))[0];
 
         if (t1 != t2) {
