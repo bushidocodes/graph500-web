@@ -201,11 +201,3 @@ void matrixMultiplication(int matrixSize)
     printf("Strassens process time for %dx%d matrix multiplication: %f\n", matrixSize, matrixSize, totalTime);
     return;
 }
-
-// int main(int argc, char *argv[])
-// {
-
-//     matrixMultiplication();
-
-//     return 0;
-// }

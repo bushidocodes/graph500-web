@@ -1,6 +1,5 @@
 import { runTests } from "../common/tests.js"
 
-// Constructor Function
 class Matrix {
     constructor(width, height, value = 0) {
         this.W = width;
@@ -44,7 +43,6 @@ class Matrix {
         }
         return m3;
     }
-
 
     getSubMatrix(xSection, ySection) {
         let fromX, fromY;
