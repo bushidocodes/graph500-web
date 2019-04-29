@@ -15,5 +15,5 @@ cd emsdk
 
 ## Running the App
 ```bash
-make start
+make serve
 ```
