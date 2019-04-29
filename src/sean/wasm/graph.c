@@ -60,8 +60,6 @@ void initialize_graph(graph *g, bool directed)
 // Inserts an edge from source to destination in the adjascency list of graph g. If the edge is not directed, it adds source -> destination and destination -> but only increments th edge count once.
 void insert_edge(graph *g, int32_t source, int32_t destination, bool is_directed)
 {
-    // printf("Insert %d %d\n", source, destination);
-
     int32_t max = source > destination ? source : destination;
 
     if (max > g->number_vertices)
