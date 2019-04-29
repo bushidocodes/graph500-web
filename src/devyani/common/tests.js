@@ -1,7 +1,5 @@
-// export function runTests(kruskal) {
 export function runTests(init, insertadjver, kruskal, printResults) {
     init();
-    // const nodes = [0, 1, 2, 3, 4, 5, 6];
     const edges = [
         [0, 1, 7],
         [0, 3, 5],
@@ -18,8 +16,8 @@ export function runTests(init, insertadjver, kruskal, printResults) {
     edges.forEach(([source, destination, weight]) =>
         insertadjver(source, destination, weight)
     )
+    console.time(`Kruskal`);
     kruskal();
+    console.timeEnd(`Kruskal`);
     printResults();
-
-    // console.log(kruskal(nodes, edges));
 }
