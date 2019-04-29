@@ -2,31 +2,32 @@
 
 ## Define compiler and flags
 CC=emcc
-CCFLAGSBASE= -O0 -g \
+CCFLAGSBASE= -O3 \
 	-s STRICT=1 \
 	-s MALLOC=dlmalloc \
 	-s WASM=1 
-CCFLAGS= ${CCFLAGSBASE} \
-	-s SIDE_MODULE=1 
+CCFLAGSFIBB= ${CCFLAGSBASE} \
+	-s EXPORTED_FUNCTIONS='["_fibonacci"]' \
+	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'
 CCFLAGSBFS= ${CCFLAGSBASE} \
 	-s ALLOW_MEMORY_GROWTH=1 \
-	-s ASSERTIONS=1  \
 	-s EXPORTED_FUNCTIONS='["_createGraph", "_insertEdge", "_runBFS", "_getParent", "_compressData"]' \
 	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
 	-s SAFE_HEAP=1 #\
+	-s ASSERTIONS=1  \
 	-s TOTAL_MEMORY=1999962112
 CCFLAGSKRUSKAL= ${CCFLAGSBASE} \
 	-s ALLOW_MEMORY_GROWTH=1 \
-	-s ASSERTIONS=1  \
 	-s EXPORTED_FUNCTIONS='["_init", "_insertadjver", "_kruskal", "_printResults"]' \
 	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
 	-s SAFE_HEAP=1
+	# -s ASSERTIONS=1  
 CCFLAGSSTRASSENS= ${CCFLAGSBASE} \
 	-s ALLOW_MEMORY_GROWTH=1 \
-	-s ASSERTIONS=1  \
 	-s EXPORTED_FUNCTIONS='["_matrixMultiplication"]' \
 	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
 	-s SAFE_HEAP=1
+	# -s ASSERTIONS=1  
 CCFLAGSPTHREADS= ${CCFLAGSBASE} \
 	-s USE_PTHREADS=1 \
 	-s PTHREAD_POOL_SIZE=4 
@@ -52,11 +53,11 @@ make-fibb: clean-fibb
 	mkdir -p ./dist/fibb/js
 
 build-fibb: build-deps clean-fibb make-fibb
-	$(CC) ./src/fibb/wasm/main.c -o ./dist/fibb/wasm/main.wasm $(CCFLAGS)
+	$(CC) ./src/fibb/wasm/main.c -o ./dist/fibb/wasm/emscripten.js $(CCFLAGSFIBB)
 	$(CC) ./src/fibb/wasm-pthread/main.c -o ./dist/fibb/wasm-pthread/main.js $(CCFLAGSPTHREADS)
 	cp ./src/fibb/js/main.js ./dist/fibb/js/main.js
 	cp ./src/fibb/wasm/main.js ./dist/fibb/wasm/main.js
-	cp ./src/htmlTemplates/indexChild.html ./dist/fibb/wasm/index.html
+	cp ./src/htmlTemplates/indexGlueCode.html ./dist/fibb/wasm/index.html
 	cp ./src/htmlTemplates/indexPthreads.html ./dist/fibb/wasm-pthread/index.html
 	cp ./src/htmlTemplates/indexChild.html ./dist/fibb/js/index.html
 	cp -r ./src/fibb/common ./dist/fibb/
