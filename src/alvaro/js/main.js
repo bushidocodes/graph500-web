@@ -14,7 +14,7 @@ class Matrix {
         }
     }
 
-    print = function (string = "") {
+    static print(string = "") {
         if (!string == "") console.log(string);
         console.log(this.element.join('\n'));
     }
