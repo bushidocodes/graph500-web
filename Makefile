@@ -8,29 +8,29 @@ CCFLAGSBASE= -O3 \
 	-s WASM=1 
 CCFLAGSFIBB= ${CCFLAGSBASE} \
 	-s EXPORTED_FUNCTIONS='["_fibonacci"]' \
-	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'
+	-s EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]'
 CCFLAGSBFS= ${CCFLAGSBASE} \
 	-s ALLOW_MEMORY_GROWTH=1 \
 	-s EXPORTED_FUNCTIONS='["_createGraph", "_insertEdge", "_runBFS", "_getParent", "_compressData"]' \
-	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
+	-s EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
 	-s SAFE_HEAP=1 #\
 	-s ASSERTIONS=1  \
 	-s TOTAL_MEMORY=1999962112
 CCFLAGSKRUSKAL= ${CCFLAGSBASE} \
 	-s ALLOW_MEMORY_GROWTH=1 \
 	-s EXPORTED_FUNCTIONS='["_init", "_insertadjver", "_kruskal", "_printResults"]' \
-	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
+	-s EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
 	-s SAFE_HEAP=1
 	# -s ASSERTIONS=1  
 CCFLAGSSTRASSENS= ${CCFLAGSBASE} \
 	-s ALLOW_MEMORY_GROWTH=1 \
 	-s EXPORTED_FUNCTIONS='["_matrixMultiplication"]' \
-	-s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
+	-s EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
 	-s SAFE_HEAP=1
 	# -s ASSERTIONS=1  
 CCFLAGSPTHREADS= ${CCFLAGSBASE} \
-	-s USE_PTHREADS=1 \
-	-s PTHREAD_POOL_SIZE=4 
+	-pthread \
+	-s PTHREAD_POOL_SIZE=4
 
 
 all: build
