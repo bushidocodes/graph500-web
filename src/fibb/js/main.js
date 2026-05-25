@@ -4,7 +4,7 @@ function fibonacci(iterations) {
     let val = 1;
     let last = 0;
 
-    if (iterations == 0) {
+    if (iterations === 0) {
         return 0;
     }
     for (let i = 1; i < iterations; i++) {

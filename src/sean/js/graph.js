@@ -22,7 +22,7 @@ export class Graph {
     }
 
     bfs(start) {
-        if (this.hasSourceVertex(start) == false) {
+        if (!this.hasSourceVertex(start)) {
             console.log(`${start} not found`);
             return;
         }

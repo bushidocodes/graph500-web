@@ -22,7 +22,7 @@ function kruskal() {
         const t1 = forest.filter(tree => tree.includes(n1))[0];
         const t2 = forest.filter(tree => tree.includes(n2))[0];
 
-        if (t1 != t2) {
+        if (t1 !== t2) {
             forest = forest.filter(t => t[0] != t1[0] && t[0] != t2[0]);
             const union = [...t1, ...t2];
             forest.push(union);
