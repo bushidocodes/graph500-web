@@ -2,14 +2,13 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include <stdint.h>
 #include <string.h>
 #include "constants.h"
 
 // This edge struct acts as a linked list node
 typedef struct edge
 {
-    int32_t destination; /* destination vertex of edge a.k.a an adjascent vertex */
+    int32_t destination; /* destination vertex of edge a.k.a an adjacent vertex */
     struct edge *next;   /* next edge in list... I have to use the struct keyboard because this is recursive */
 } edge;
 
@@ -57,7 +56,7 @@ void initialize_graph(graph *g, bool directed)
     printf("Graph Initialization complete\n");
 }
 
-// Inserts an edge from source to destination in the adjascency list of graph g. If the edge is not directed, it adds source -> destination and destination -> but only increments th edge count once.
+// Inserts source->destination into the adjacency list. For undirected edges also inserts destination->source, but increments edge count only once.
 void insert_edge(graph *g, int32_t source, int32_t destination, bool is_directed)
 {
     int32_t max = source > destination ? source : destination;
@@ -76,12 +75,12 @@ void insert_edge(graph *g, int32_t source, int32_t destination, bool is_directed
     if (g->edges[source] != NULL)
         new_edge->next = g->edges[source];
 
-    g->edges[source] = new_edge; //68001 is max
+    g->edges[source] = new_edge;
     g->degree[source]++;
 
     if (is_directed == false)
     {
-        // We set direted to true in this call so we don't infinitely loop
+        // Pass directed=true to avoid infinite recursion on undirected edges
         insert_edge(g, destination, source, true);
     }
     else
@@ -93,14 +92,14 @@ void insert_edge(graph *g, int32_t source, int32_t destination, bool is_directed
 
 void build_csr(graph *g)
 {
-    g->IA = malloc((g->number_edges + 2) * sizeof(int32_t)); /* I might be off by one here */
+    g->IA = malloc((g->number_vertices + 2) * sizeof(int32_t));
 
-    // Mark the 0 positions as Evil to force a crash to ensure I'm indexing starting at 1 to be consistent
-    g->IA[0] = 666;
+    // Poison slot 0 so any accidental 0-based indexing crashes fast (graph is 1-indexed)
+    g->IA[0] = 0xDEAD;
 
     g->IA[1] = 0;
-    // I'm just multiplying by 2 here because the number_edges is only incremented one for the opposing edges on a non-DiGraph. I should really only store non-directed edges once.
-    g->JA = malloc((g->number_edges * 2) * sizeof(int32_t)); // "Column Indices"
+    // number_edges counts undirected pairs once; multiply by 2 for both directions
+    g->JA = malloc((g->number_edges * 2) * sizeof(int32_t));
     int32_t edge_idx = 0;
     for (int32_t current_vertex = 1; current_vertex < g->number_vertices; current_vertex++)
     {

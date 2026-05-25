@@ -15,7 +15,7 @@ class Matrix {
     }
 
     static print(string = "") {
-        if (!string == "") console.log(string);
+        if (string !== "") console.log(string);
         console.log(this.element.join('\n'));
     }
 
@@ -46,11 +46,11 @@ class Matrix {
 
     getSubMatrix(xSection, ySection) {
         let fromX, fromY;
-        if (xSection == 1) fromX = 0;
+        if (xSection === 1) fromX = 0;
         else fromX = this.W / 2;
 
-        if (ySection == 1) fromY = 0;
-        else fromY = this.W / 2;
+        if (ySection === 1) fromY = 0;
+        else fromY = this.H / 2;
 
         let m = new Matrix(this.W / 2, this.H / 2);
 

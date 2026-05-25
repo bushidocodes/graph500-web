@@ -36,7 +36,7 @@ export class SparseMatrix {
             this.highestYIndex = y;
         }
         // If not updating an existing cell, increment elementCount
-        if (this.adjacencyList.get(x).has(y) == false) this.elementCount++;
+        if (!this.adjacencyList.get(x).has(y)) this.elementCount++;
     }
 
     validateCSRCompatibility(value) {
@@ -62,15 +62,15 @@ export class SparseMatrix {
     }
 
     columnIsEmpty(x) {
-        return this.ia[x + 1] == this.ia[x];
+        return this.ia[x + 1] === this.ia[x];
     }
 
     columnContainsYIndex(x, y) {
-        return this.ja.slice(this.ia[x], this.ia[x + 1]).includes(y) == true;
+        return this.ja.slice(this.ia[x], this.ia[x + 1]).includes(y);
     }
 
     processCSRValue(val) {
-        return this.isCSR && this.valueType == "number" ? parseInt(val, 10) : val;
+        return this.isCSR && this.valueType === "number" ? parseInt(val, 10) : val;
     }
 
     getColumn(x) {
@@ -110,7 +110,7 @@ export class SparseMatrix {
 
     // Column Major Order CSR. Assumes value is boolean
     generateCSR() {
-        if (this.compatibleWithCSR == false) {
+        if (!this.compatibleWithCSR) {
             console.log("Not compatible with CSR");
             return
         };
@@ -134,7 +134,7 @@ export class SparseMatrix {
         xIndices = xIndices.map(a => parseInt(a, 10)).sort((a, b) => a - b);
         for (let x = 0; x <= this.highestXIndex; x++) {
             // Fill in any empty columns;
-            if (this.hasColumn(x) == false) {
+            if (!this.hasColumn(x)) {
                 this.ia[x + 1] = this.ia[x];
             } else {
                 let column = this.getColumn(x);
@@ -154,6 +154,6 @@ export class SparseMatrix {
     }
 
     isBooleanMatrix() {
-        return this.valueType == "boolean";
+        return this.valueType === "boolean";
     }
 }
