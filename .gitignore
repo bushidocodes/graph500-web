@@ -1,2 +1,8 @@
 .vscode
 dist
+
+# memory.wasm is a prebuilt WebAssembly allocator (exports malloc/free) used by
+# src/fibb/wasm/manualLoading.js for manual WASM instantiation.  It is a binary
+# build artifact and should not be version-controlled.
+# Place the file at src/libs/memory.wasm locally if needed.
+src/libs/*.wasm
