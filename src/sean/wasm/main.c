@@ -17,6 +17,11 @@ void createGraph()
 {
     printf("Start Create Graph\n");
     myGraph = malloc(sizeof(graph));
+    if (myGraph == NULL)
+    {
+        fprintf(stderr, "createGraph: malloc failed\n");
+        return;
+    }
     initialize_graph(myGraph, false);
     printf("Graph Created!\n");
 }

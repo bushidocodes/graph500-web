@@ -150,3 +150,11 @@ test-kruskal:
 		./src/devyani/tests/test_kruskal.c \
 		-o ./dist/tests/test_kruskal.exe
 	./dist/tests/test_kruskal.exe
+
+test-malloc-guards:
+	mkdir -p ./dist/tests
+	gcc -I./src/sean/tests/unity \
+		./src/sean/tests/unity/unity.c \
+		./src/sean/tests/test_malloc_guards.c \
+		-o ./dist/tests/test_malloc_guards.exe
+	./dist/tests/test_malloc_guards.exe
