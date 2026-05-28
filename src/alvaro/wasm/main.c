@@ -5,13 +5,25 @@
 
 int **initializeMatrix(int size, int value)
 {
-    int **matrix;
     int i, j;
 
-    matrix = malloc(size * sizeof *matrix);
+    int **matrix = malloc(size * sizeof *matrix);
+    if (matrix == NULL)
+    {
+        fprintf(stderr, "initializeMatrix: malloc failed\n");
+        return NULL;
+    }
     for (i = 0; i < size; i++)
     {
         matrix[i] = malloc(size * sizeof *matrix[i]);
+        if (matrix[i] == NULL)
+        {
+            fprintf(stderr, "initializeMatrix: row malloc failed\n");
+            for (int k = 0; k < i; k++)
+                free(matrix[k]);
+            free(matrix);
+            return NULL;
+        }
     }
 
     for (i = 0; i < size; i++)
@@ -27,16 +39,43 @@ int **initializeMatrix(int size, int value)
 
 int **initializeEmptyMatrix(int size)
 {
-    int **matrix;
-    int i, j;
+    int i;
 
-    matrix = malloc(size * sizeof *matrix);
+    int **matrix = malloc(size * sizeof *matrix);
+    if (matrix == NULL)
+    {
+        fprintf(stderr, "initializeEmptyMatrix: malloc failed\n");
+        return NULL;
+    }
     for (i = 0; i < size; i++)
     {
         matrix[i] = malloc(size * sizeof *matrix[i]);
+        if (matrix[i] == NULL)
+        {
+            fprintf(stderr, "initializeEmptyMatrix: row malloc failed\n");
+            for (int k = 0; k < i; k++)
+                free(matrix[k]);
+            free(matrix);
+            return NULL;
+        }
     }
     return matrix;
 }
+
+/* Issue #12: helper to free a size x size matrix allocated by
+ * initializeMatrix / initializeEmptyMatrix.
+ * Protected by HAVE_FREE_MATRIX so the test file can pre-define it
+ * (with counted free calls) without causing a duplicate symbol. */
+#ifndef HAVE_FREE_MATRIX
+void freeMatrix(int **m, int size)
+{
+    if (m == NULL)
+        return;
+    for (int i = 0; i < size; i++)
+        free(m[i]);
+    free(m);
+}
+#endif
 
 void display(int **matrix, int size)
 {
@@ -137,52 +176,68 @@ int **getSuperMatrix(int **c11, int **c12, int **c21, int **c22, int size)
 
 int **multiplyStrassens(int **a, int **b, int size)
 {
-
     if (size < 256)
         return multiply(a, b, size);
 
-    int i, j, k;
+    int half = size / 2;
 
-    int **a11;
-    int **a12;
-    int **a21;
-    int **a22;
+    /* Partition A and B into quadrants */
+    int **a11 = getSubMatrix(a, size, 1, 1);
+    int **a12 = getSubMatrix(a, size, 1, 2);
+    int **a21 = getSubMatrix(a, size, 2, 1);
+    int **a22 = getSubMatrix(a, size, 2, 2);
 
-    a11 = getSubMatrix(a, size, 1, 1);
-    a12 = getSubMatrix(a, size, 1, 2);
-    a21 = getSubMatrix(a, size, 2, 1);
-    a22 = getSubMatrix(a, size, 2, 2);
+    int **b11 = getSubMatrix(b, size, 1, 1);
+    int **b12 = getSubMatrix(b, size, 1, 2);
+    int **b21 = getSubMatrix(b, size, 2, 1);
+    int **b22 = getSubMatrix(b, size, 2, 2);
 
-    int **b11;
-    int **b12;
-    int **b21;
-    int **b22;
+    /* Compute result quadrants; free intermediate products immediately.
+     * Issue #12: the original code used compound expressions like
+     *   c11 = add(multiplyStrassens(...), multiplyStrassens(...), half)
+     * which made both inner return values unreachable and permanently leaked. */
 
-    b11 = getSubMatrix(b, size, 1, 1);
-    b12 = getSubMatrix(b, size, 1, 2);
-    b21 = getSubMatrix(b, size, 2, 1);
-    b22 = getSubMatrix(b, size, 2, 2);
+    int **prod1, **prod2;
 
-    int **c11;
-    int **c12;
-    int **c21;
-    int **c22;
+    prod1 = multiplyStrassens(a11, b11, half);
+    prod2 = multiplyStrassens(a12, b21, half);
+    int **c11 = add(prod1, prod2, half);
+    freeMatrix(prod1, half);
+    freeMatrix(prod2, half);
 
-    c11 = add(multiplyStrassens(a11, b11, size / 2), multiplyStrassens(a12, b21, size / 2), size / 2);
-    c12 = add(multiplyStrassens(a11, b12, size / 2), multiplyStrassens(a12, b22, size / 2), size / 2);
-    c21 = add(multiplyStrassens(a21, b11, size / 2), multiplyStrassens(a22, b21, size / 2), size / 2);
-    c22 = add(multiplyStrassens(a21, b12, size / 2), multiplyStrassens(a22, b22, size / 2), size / 2);
+    prod1 = multiplyStrassens(a11, b12, half);
+    prod2 = multiplyStrassens(a12, b22, half);
+    int **c12 = add(prod1, prod2, half);
+    freeMatrix(prod1, half);
+    freeMatrix(prod2, half);
 
-    int **c;
+    prod1 = multiplyStrassens(a21, b11, half);
+    prod2 = multiplyStrassens(a22, b21, half);
+    int **c21 = add(prod1, prod2, half);
+    freeMatrix(prod1, half);
+    freeMatrix(prod2, half);
 
-    c = getSuperMatrix(c11, c12, c21, c22, size / 2);
+    prod1 = multiplyStrassens(a21, b12, half);
+    prod2 = multiplyStrassens(a22, b22, half);
+    int **c22 = add(prod1, prod2, half);
+    freeMatrix(prod1, half);
+    freeMatrix(prod2, half);
+
+    int **c = getSuperMatrix(c11, c12, c21, c22, half);
+
+    /* Free all quadrant matrices now that getSuperMatrix has consumed them */
+    freeMatrix(a11, half); freeMatrix(a12, half);
+    freeMatrix(a21, half); freeMatrix(a22, half);
+    freeMatrix(b11, half); freeMatrix(b12, half);
+    freeMatrix(b21, half); freeMatrix(b22, half);
+    freeMatrix(c11, half); freeMatrix(c12, half);
+    freeMatrix(c21, half); freeMatrix(c22, half);
 
     return c;
 }
 
 void matrixMultiplication(int matrixSize)
 {
-    int y, x;
     double totalTime;
     clock_t start, end;
 
@@ -192,6 +247,12 @@ void matrixMultiplication(int matrixSize)
 
     m1 = initializeMatrix(matrixSize, 2);
     m2 = initializeMatrix(matrixSize, 3);
+    if (m1 == NULL || m2 == NULL)
+    {
+        freeMatrix(m1, matrixSize);
+        freeMatrix(m2, matrixSize);
+        return;
+    }
 
     printf("Multiplication started \n");
     start = clock();
@@ -199,5 +260,10 @@ void matrixMultiplication(int matrixSize)
     end = clock();
     totalTime = ((double)(end - start)) / CLOCKS_PER_SEC;
     printf("Strassens process time for %dx%d matrix multiplication: %f\n", matrixSize, matrixSize, totalTime);
+
+    /* Issue #12: free all three matrices before returning */
+    freeMatrix(m1, matrixSize);
+    freeMatrix(m2, matrixSize);
+    freeMatrix(m3, matrixSize);
     return;
 }

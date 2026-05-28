@@ -151,6 +151,14 @@ test-kruskal:
 		-o ./dist/tests/test_kruskal.exe
 	./dist/tests/test_kruskal.exe
 
+test-strassen:
+	mkdir -p ./dist/tests
+	gcc -I./src/sean/tests/unity \
+		./src/sean/tests/unity/unity.c \
+		./src/alvaro/tests/test_strassen.c \
+		-o ./dist/tests/test_strassen.exe
+	./dist/tests/test_strassen.exe
+
 test-malloc-guards:
 	mkdir -p ./dist/tests
 	gcc -I./src/sean/tests/unity \
