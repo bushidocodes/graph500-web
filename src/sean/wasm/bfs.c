@@ -15,6 +15,11 @@ void bfs(graph *g, int32_t start, bool is_discovered[MAXV + 1], int32_t has_pare
     if (g->is_CSR)
     {
         uint8_t *level = malloc((g->number_vertices + 1) * sizeof(uint8_t));
+        if (level == NULL)
+        {
+            fprintf(stderr, "bfs: level malloc failed\n");
+            return;
+        }
         memset(level, UINT8_MAX, (g->number_vertices + 1) * sizeof(uint8_t));
         uint8_t current_level = 0;
         int32_t neighbor_count = 0;
@@ -32,6 +37,12 @@ void bfs(graph *g, int32_t start, bool is_discovered[MAXV + 1], int32_t has_pare
                 {
                     neighbor_count = getDegree(g, current_vertex);
                     int32_t *neighbors = malloc(getDegree(g, current_vertex) * sizeof(int32_t));
+                    if (neighbors == NULL)
+                    {
+                        fprintf(stderr, "bfs: neighbors malloc failed\n");
+                        free(level);
+                        return;
+                    }
                     getNeighbors(g, current_vertex, neighbors);
 
                     for (int32_t i = 0; i < neighbor_count; i++)
@@ -60,6 +71,11 @@ void bfs(graph *g, int32_t start, bool is_discovered[MAXV + 1], int32_t has_pare
 
         // Initialize queue
         q = malloc(sizeof(queue));
+        if (q == NULL)
+        {
+            fprintf(stderr, "bfs: queue malloc failed\n");
+            return;
+        }
         reset(q, false);
 
         // Add start to queue

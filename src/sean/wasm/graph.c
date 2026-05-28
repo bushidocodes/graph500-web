@@ -68,7 +68,8 @@ void insert_edge(graph *g, int32_t source, int32_t destination, bool is_directed
     new_edge = (edge *)malloc(sizeof(edge)); /* allocate edge storage */
     if (new_edge == NULL)
     {
-        printf("Malloc failed!");
+        fprintf(stderr, "insert_edge: malloc failed\n");
+        return; /* Issue #11: must not fall through to dereference NULL */
     }
 
     new_edge->destination = destination;
@@ -92,6 +93,11 @@ void insert_edge(graph *g, int32_t source, int32_t destination, bool is_directed
 void build_csr(graph *g)
 {
     g->IA = malloc((g->number_vertices + 2) * sizeof(int32_t));
+    if (g->IA == NULL)
+    {
+        fprintf(stderr, "build_csr: IA malloc failed\n");
+        return;
+    }
 
     // Poison slot 0 so any accidental 0-based indexing crashes fast (graph is 1-indexed)
     g->IA[0] = 0xDEAD;
@@ -99,6 +105,13 @@ void build_csr(graph *g)
     g->IA[1] = 0;
     // number_edges counts undirected pairs once; multiply by 2 for both directions
     g->JA = malloc((g->number_edges * 2) * sizeof(int32_t));
+    if (g->JA == NULL)
+    {
+        fprintf(stderr, "build_csr: JA malloc failed\n");
+        free(g->IA);
+        g->IA = NULL;
+        return;
+    }
     int32_t edge_idx = 0;
     for (int32_t current_vertex = 1; current_vertex <= g->number_vertices; current_vertex++)
     {
