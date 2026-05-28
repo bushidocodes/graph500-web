@@ -3,6 +3,13 @@
 #include <stdlib.h>
 #include <limits.h>
 
+#ifndef MAX_EDGES
+#define MAX_EDGES    200
+#endif
+#ifndef MAX_VERTICES
+#define MAX_VERTICES 200
+#endif
+
 typedef struct edgenode //structure for edgenode
 {
     int src;
@@ -183,10 +190,17 @@ void init()
 
 void insertadjver(int src, int des, int weight) //src is source vertex and des is destination vertex
 {
+    // Issue #9: guard against out-of-bounds writes to fixed-size arrays
+    int max = src > des ? src : des;
+    if (edgeCount >= MAX_EDGES || max >= MAX_VERTICES)
+    {
+        fprintf(stderr, "insertadjver: limit exceeded (edgeCount=%d, max vertex=%d)\n", edgeCount, max);
+        return;
+    }
+
     edgearray[edgeCount] = newedgenode(src, des, weight); // (i)th edge
 
     // Update number of vertices and edges. This assumes vertices are identified by numerical indices starting at 0
-    int max = src > des ? src : des;
     if (max > (vertexCount - 1))
         vertexCount = (max + 1);
 
