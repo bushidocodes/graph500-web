@@ -134,3 +134,11 @@ test-sean:
 		./src/sean/tests/test_graph.c \
 		-o ./dist/tests/test_sean.exe
 	./dist/tests/test_sean.exe
+
+test-bfs:
+	mkdir -p ./dist/tests
+	gcc -I./src/sean/tests/unity \
+		./src/sean/tests/unity/unity.c \
+		./src/sean/tests/test_bfs.c \
+		-o ./dist/tests/test_bfs.exe
+	./dist/tests/test_bfs.exe

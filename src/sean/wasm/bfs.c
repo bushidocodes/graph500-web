@@ -26,13 +26,12 @@ void bfs(graph *g, int32_t start, bool is_discovered[MAXV + 1], int32_t has_pare
         while (should_advance)
         {
             should_advance = false;
-            for (int32_t current_vertex = 1; current_vertex < g->number_vertices; current_vertex++)
+            for (int32_t current_vertex = 1; current_vertex <= g->number_vertices; current_vertex++)
             {
                 if (level[current_vertex] == current_level)
                 {
                     neighbor_count = getDegree(g, current_vertex);
-                    // TODO: I inexplicably need to pad this number... Why?
-                    int32_t *neighbors = malloc((getDegree(g, current_vertex) + 200) * sizeof(int32_t));
+                    int32_t *neighbors = malloc(getDegree(g, current_vertex) * sizeof(int32_t));
                     getNeighbors(g, current_vertex, neighbors);
 
                     for (int32_t i = 0; i < neighbor_count; i++)
