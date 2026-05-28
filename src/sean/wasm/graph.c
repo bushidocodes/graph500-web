@@ -72,8 +72,7 @@ void insert_edge(graph *g, int32_t source, int32_t destination, bool is_directed
     }
 
     new_edge->destination = destination;
-    if (g->edges[source] != NULL)
-        new_edge->next = g->edges[source];
+    new_edge->next = g->edges[source];
 
     g->edges[source] = new_edge;
     g->degree[source]++;
@@ -101,9 +100,9 @@ void build_csr(graph *g)
     // number_edges counts undirected pairs once; multiply by 2 for both directions
     g->JA = malloc((g->number_edges * 2) * sizeof(int32_t));
     int32_t edge_idx = 0;
-    for (int32_t current_vertex = 1; current_vertex < g->number_vertices; current_vertex++)
+    for (int32_t current_vertex = 1; current_vertex <= g->number_vertices; current_vertex++)
     {
-        for (edge *currentEdge = g->edges[current_vertex]; currentEdge->next != NULL; currentEdge = currentEdge->next)
+        for (edge *currentEdge = g->edges[current_vertex]; currentEdge != NULL; currentEdge = currentEdge->next)
         {
             g->JA[edge_idx] = currentEdge->destination;
             edge_idx++;

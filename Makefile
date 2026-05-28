@@ -126,3 +126,11 @@ clean:
 
 serve: build
 	http-server dist
+
+test-sean:
+	mkdir -p ./dist/tests
+	gcc -I./src/sean/tests/unity \
+		./src/sean/tests/unity/unity.c \
+		./src/sean/tests/test_graph.c \
+		-o ./dist/tests/test_sean.exe
+	./dist/tests/test_sean.exe
