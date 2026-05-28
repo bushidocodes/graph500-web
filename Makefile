@@ -142,3 +142,11 @@ test-bfs:
 		./src/sean/tests/test_bfs.c \
 		-o ./dist/tests/test_bfs.exe
 	./dist/tests/test_bfs.exe
+
+test-kruskal:
+	mkdir -p ./dist/tests
+	gcc -I./src/sean/tests/unity \
+		./src/sean/tests/unity/unity.c \
+		./src/devyani/tests/test_kruskal.c \
+		-o ./dist/tests/test_kruskal.exe
+	./dist/tests/test_kruskal.exe
