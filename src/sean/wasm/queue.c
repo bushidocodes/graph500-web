@@ -29,6 +29,7 @@ int32_t dequeue(queue *q)
     if (q->start == q->end - 1)
     {
         printf("Error: Queue is empty\n");
+        return -1;
     }
     int32_t result = q->data[q->start];
     q->start++;
