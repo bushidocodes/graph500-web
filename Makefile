@@ -41,7 +41,7 @@ make-dist:
 build-deps: make-dist
 	cp -r ./src/resources ./dist
 	cp ./src/htmlTemplates/index.html ./dist/index.html
-	cp -r ./src/libs ./dist
+	@if [ -d ./src/libs ]; then cp -r ./src/libs ./dist; fi
 
 clean-fibb: 
 	rm -rf ./dist/fibb
