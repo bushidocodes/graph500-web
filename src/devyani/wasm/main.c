@@ -144,11 +144,8 @@ void makeset(int u)
 int findRoot(int u)
 {
     if (parent[u] != u)
-    {
-        u = parent[u];
-        parent[u] = findRoot(u);
-    }
-    return (u);
+        parent[u] = findRoot(parent[u]);
+    return parent[u];
 }
 
 // Returns boolean indicating if union of two disparate sets occured
