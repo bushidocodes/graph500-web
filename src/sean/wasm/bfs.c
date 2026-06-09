@@ -1,6 +1,7 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <stdbool.h>
 
 #include "constants.h"
@@ -14,14 +15,15 @@ void bfs(graph *g, int32_t start, bool is_discovered[MAXV + 1], int32_t has_pare
 {
     if (g->is_CSR)
     {
-        uint8_t *level = malloc((g->number_vertices + 1) * sizeof(uint8_t));
+        uint32_t *level = malloc((g->number_vertices + 1) * sizeof(uint32_t));
         if (level == NULL)
         {
             fprintf(stderr, "bfs: level malloc failed\n");
             return;
         }
-        memset(level, UINT8_MAX, (g->number_vertices + 1) * sizeof(uint8_t));
-        uint8_t current_level = 0;
+        for (int32_t i = 0; i <= g->number_vertices; i++)
+            level[i] = UINT32_MAX;
+        uint32_t current_level = 0;
         int32_t neighbor_count = 0;
         bool should_advance = true;
 
@@ -47,7 +49,7 @@ void bfs(graph *g, int32_t start, bool is_discovered[MAXV + 1], int32_t has_pare
 
                     for (int32_t i = 0; i < neighbor_count; i++)
                     {
-                        if (level[neighbors[i]] == UINT8_MAX)
+                        if (level[neighbors[i]] == UINT32_MAX)
                         {
                             should_advance = true;
                             level[neighbors[i]] = current_level + 1;
