@@ -72,6 +72,11 @@ void kruskal()
 {
     printf("Starting Kruskal\n");
     heap *h = Buildheap(edgeCount);
+    if (h == NULL)
+    {
+        fprintf(stderr, "kruskal: Buildheap failed\n");
+        return;
+    }
     for (int i = 0; i <= vertexCount; i++) //makeset for all vertices
         makeset(i);
     int mstEdgeIdx = 0;
@@ -95,12 +100,30 @@ heap *Buildheap(int maxsize)
 {
     int i;
     heap *h = (heap *)malloc(sizeof(heap));
+    if (h == NULL)
+    {
+        fprintf(stderr, "Buildheap: malloc failed for heap struct\n");
+        return NULL;
+    }
     h->currentsize = 0;
     h->maxsize = maxsize;
     h->edgeheaparray = (heapnode **)malloc(maxsize * sizeof(heapnode *));
+    if (h->edgeheaparray == NULL)
+    {
+        fprintf(stderr, "Buildheap: malloc failed for edgeheaparray\n");
+        free(h);
+        return NULL;
+    }
     for (i = 0; i < edgeCount; i++)
     {
         h->edgeheaparray[i] = newheapnode(edgearray[i]);
+        if (h->edgeheaparray[i] == NULL)
+        {
+            fprintf(stderr, "Buildheap: newheapnode returned NULL at index %d\n", i);
+            free(h->edgeheaparray);
+            free(h);
+            return NULL;
+        }
         h->currentsize++;
     }
 
@@ -199,6 +222,11 @@ void insertadjver(int src, int des, int weight) //src is source vertex and des i
     }
 
     edgearray[edgeCount] = newedgenode(src, des, weight); // (i)th edge
+    if (edgearray[edgeCount] == NULL)
+    {
+        fprintf(stderr, "insertadjver: newedgenode failed\n");
+        return;
+    }
 
     // Update number of vertices and edges. This assumes vertices are identified by numerical indices starting at 0
     if (max > (vertexCount - 1))
@@ -210,6 +238,11 @@ void insertadjver(int src, int des, int weight) //src is source vertex and des i
 edgenode *newedgenode(int src, int des, int weight)
 {
     edgenode *p = (edgenode *)malloc(sizeof(edgenode));
+    if (p == NULL)
+    {
+        fprintf(stderr, "newedgenode: malloc failed\n");
+        return NULL;
+    }
     p->src = src;
     p->des = des;
     p->weight = weight;
@@ -219,6 +252,11 @@ edgenode *newedgenode(int src, int des, int weight)
 heapnode *newheapnode(edgenode *q)
 {
     heapnode *p = (heapnode *)malloc(sizeof(heapnode));
+    if (p == NULL)
+    {
+        fprintf(stderr, "newheapnode: malloc failed\n");
+        return NULL;
+    }
     p->src = q->src;
     p->des = q->des;
     p->weight = q->weight;
