@@ -14,7 +14,7 @@ typedef struct queue
 
 void enqueue(int32_t x, queue *q)
 {
-    if (q->end >= MAXV)
+    if (q->end > MAXV)
     {
         printf("Error: Queue is full");
         /* TODO: Implement queue cleanup...*/
