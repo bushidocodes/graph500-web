@@ -84,6 +84,11 @@ void kruskal()
     while (mstEdgeIdx < mstLength)
     {
         heapnode *minWeightEdge = extractMin(h);
+        if (minWeightEdge == NULL)
+        {
+            fprintf(stderr, "kruskal: heap exhausted before MST complete\n");
+            break;
+        }
         // Check to see if this edge connects nodes already connected via MST
         bool didMergeUnionSets = mergeUnionSets(minWeightEdge->src, minWeightEdge->des);
 
@@ -272,6 +277,11 @@ void swap(heapnode **p, heapnode **q) // swap function for swaping ptr to heapno
 
 heapnode *extractMin(heap *h)
 {
+    if (h == NULL || h->currentsize == 0)
+    {
+        fprintf(stderr, "extractMin: heap is empty\n");
+        return NULL;
+    }
     heapnode *minHeapnode, *lastHeapnode;
     minHeapnode = h->edgeheaparray[0]; //topmost node is the minimum
     lastHeapnode = h->edgeheaparray[h->currentsize - 1];
