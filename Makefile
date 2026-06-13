@@ -169,3 +169,5 @@ test-malloc-guards:
 		./src/sean/tests/test_malloc_guards.c \
 		-o ./dist/tests/test_malloc_guards.exe
 	./dist/tests/test_malloc_guards.exe
+
+test: test-sean test-bfs test-kruskal test-strassen test-malloc-guards
