@@ -2,10 +2,11 @@
 
 ## Define compiler and flags
 CC=emcc
-TESTCFLAGS= -Wall -Wextra
+TESTCFLAGS= -Wall -Wextra -Werror
 CCFLAGSBASE= -O3 \
 	-Wall \
 	-Wextra \
+	-Werror \
 	-s STRICT=1 \
 	-s MALLOC=dlmalloc \
 	-s WASM=1 
