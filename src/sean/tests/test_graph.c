@@ -11,6 +11,8 @@
  *     (7b) outer loop `current_vertex < g->number_vertices` skips the
  *          highest-numbered vertex
  *     (7c) inner loop dereferences NULL when a vertex has no edges
+ *   Issue #34 – insert_edge writes edges[source]/degree[source] out of bounds
+ *               when a vertex index falls outside the valid [1, MAXV] range.
  *
  * Test ordering is deliberate: tests 1-4 fail *cleanly* with the buggy code
  * (no crash), test 5 crashes the process with the buggy code (demonstrating
@@ -208,6 +210,59 @@ void test_build_csr_isolated_vertex_no_crash(void)
     free_graph(g);
 }
 
+/* ================================================================
+ * Issue #34 – insert_edge out-of-bounds write
+ *
+ * edges[]/degree[] are fixed-size (MAXV + 1 elements, valid 1-indexed range
+ * [1, MAXV]). insert_edge accessed g->edges[source]/g->degree[source] without
+ * any bounds check, so a vertex index outside that range writes past the end
+ * of the arrays (corrupting adjacent heap/struct state in WASM linear memory).
+ * It also set number_vertices = max unconditionally, which would later drive
+ * build_csr to allocate/iterate out of bounds.
+ *
+ * Detection: a rejected insert must leave the graph untouched — number_vertices
+ * and number_edges stay 0 and edges[]/degree[] are never written. With the bug
+ * number_vertices becomes `max`, failing these assertions (red); the guard
+ * makes them pass (green).
+ * ================================================================ */
+
+void test_insert_edge_rejects_oversized_vertex(void)
+{
+    graph *g = malloc(sizeof(graph));
+    initialize_graph(g, true);
+
+    /* source beyond the array — would write edges[MAXV + 1] out of bounds */
+    insert_edge(g, MAXV + 1, 1, true);
+    TEST_ASSERT_EQUAL_INT_MESSAGE(0, g->number_vertices,
+        "Issue #34: insert with source > MAXV must be rejected "
+        "(bug: number_vertices = max and edges[source] written out of bounds)");
+
+    /* destination beyond the array — undirected recursion would write edges[dest] OOB */
+    insert_edge(g, 1, MAXV + 1, false);
+    TEST_ASSERT_EQUAL_INT_MESSAGE(0, g->number_vertices,
+        "Issue #34: insert with destination > MAXV must be rejected");
+
+    TEST_ASSERT_EQUAL_INT(0, g->number_edges);
+
+    free_graph(g);
+}
+
+void test_insert_edge_rejects_nonpositive_vertex(void)
+{
+    graph *g = malloc(sizeof(graph));
+    initialize_graph(g, true);
+
+    /* vertex 0 is the reserved/poison slot; the graph is 1-indexed */
+    insert_edge(g, 0, 1, true);
+    insert_edge(g, 1, -5, true);
+    TEST_ASSERT_EQUAL_INT_MESSAGE(0, g->number_vertices,
+        "Issue #34: insert with a non-positive vertex must be rejected "
+        "(bug: 1-indexed graph treats 0/negative as valid indices)");
+    TEST_ASSERT_EQUAL_INT(0, g->number_edges);
+
+    free_graph(g);
+}
+
 /* ================================================================ */
 int main(void)
 {
@@ -217,5 +272,7 @@ int main(void)
     RUN_TEST(test_build_csr_includes_last_edge);
     RUN_TEST(test_build_csr_includes_highest_vertex);
     RUN_TEST(test_build_csr_isolated_vertex_no_crash);
+    RUN_TEST(test_insert_edge_rejects_oversized_vertex);
+    RUN_TEST(test_insert_edge_rejects_nonpositive_vertex);
     return UNITY_END();
 }
