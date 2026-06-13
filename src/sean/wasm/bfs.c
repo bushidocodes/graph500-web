@@ -67,7 +67,6 @@ void bfs(graph *g, int32_t start, bool is_discovered[MAXV + 1], int32_t has_pare
     {
         queue *q;
         int32_t vertex;
-        int32_t neighbor_count = 0;
         int32_t adjacentVertex;
         edge *edgeLinkedList;
 

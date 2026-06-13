@@ -2,7 +2,11 @@
 
 ## Define compiler and flags
 CC=emcc
+TESTCFLAGS= -Wall -Wextra -Werror
 CCFLAGSBASE= -O3 \
+	-Wall \
+	-Wextra \
+	-Werror \
 	-s STRICT=1 \
 	-s MALLOC=dlmalloc \
 	-s WASM=1 
@@ -129,7 +133,7 @@ serve: build
 
 test-sean:
 	mkdir -p ./dist/tests
-	gcc -I./src/sean/tests/unity \
+	gcc $(TESTCFLAGS) -I./src/sean/tests/unity \
 		./src/sean/tests/unity/unity.c \
 		./src/sean/tests/test_graph.c \
 		-o ./dist/tests/test_sean.exe
@@ -137,7 +141,7 @@ test-sean:
 
 test-bfs:
 	mkdir -p ./dist/tests
-	gcc -I./src/sean/tests/unity \
+	gcc $(TESTCFLAGS) -I./src/sean/tests/unity \
 		./src/sean/tests/unity/unity.c \
 		./src/sean/tests/test_bfs.c \
 		-o ./dist/tests/test_bfs.exe
@@ -145,7 +149,7 @@ test-bfs:
 
 test-kruskal:
 	mkdir -p ./dist/tests
-	gcc -I./src/sean/tests/unity \
+	gcc $(TESTCFLAGS) -I./src/sean/tests/unity \
 		./src/sean/tests/unity/unity.c \
 		./src/devyani/tests/test_kruskal.c \
 		-o ./dist/tests/test_kruskal.exe
@@ -153,7 +157,7 @@ test-kruskal:
 
 test-strassen:
 	mkdir -p ./dist/tests
-	gcc -I./src/sean/tests/unity \
+	gcc $(TESTCFLAGS) -I./src/sean/tests/unity \
 		./src/sean/tests/unity/unity.c \
 		./src/alvaro/tests/test_strassen.c \
 		-o ./dist/tests/test_strassen.exe
@@ -161,8 +165,10 @@ test-strassen:
 
 test-malloc-guards:
 	mkdir -p ./dist/tests
-	gcc -I./src/sean/tests/unity \
+	gcc $(TESTCFLAGS) -I./src/sean/tests/unity \
 		./src/sean/tests/unity/unity.c \
 		./src/sean/tests/test_malloc_guards.c \
 		-o ./dist/tests/test_malloc_guards.exe
 	./dist/tests/test_malloc_guards.exe
+
+test: test-sean test-bfs test-kruskal test-strassen test-malloc-guards

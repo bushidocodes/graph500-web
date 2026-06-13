@@ -31,13 +31,13 @@ void *bg_func(void *arg)
     return arg;
 }
 // Foreground thread and main entry point
-int main(int argc, char *argv[])
+int main(void)
 {
     int fg_val = 19;
     int fg_result;
     int bg_vals[] = {20, 21, 22, 23};
     int bg_results[4];
-    for (int i = 0; i < sizeof(bg_vals) / sizeof(int); i++)
+    for (size_t i = 0; i < sizeof(bg_vals) / sizeof(int); i++)
     {
         bg_results[i] = bg_vals[i];
     }
