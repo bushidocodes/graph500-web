@@ -59,6 +59,17 @@ void initialize_graph(graph *g, bool directed)
 // Inserts source->destination into the adjacency list. For undirected edges also inserts destination->source, but increments edge count only once.
 void insert_edge(graph *g, int32_t source, int32_t destination, bool is_directed)
 {
+    // Issue #34: guard against out-of-bounds writes to the fixed-size
+    // edges[]/degree[] arrays. The graph is 1-indexed, so the valid vertex
+    // range is [1, MAXV]. This must run before number_vertices is updated so
+    // an out-of-range index cannot poison build_csr's allocations/iteration.
+    if (source <= 0 || source > MAXV || destination <= 0 || destination > MAXV)
+    {
+        fprintf(stderr, "insert_edge: vertex out of range [1, %d]: source=%d dest=%d\n",
+                MAXV, source, destination);
+        return;
+    }
+
     int32_t max = source > destination ? source : destination;
 
     if (max > g->number_vertices)
