@@ -28,3 +28,18 @@ jobs:
         run: emcc -v
       - name: Build all algorithms
         run: make build
+
+
+  sanitizers:
+    name: Unit tests (ASan + UBSan)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install clang
+        run: sudo apt-get update -qq && sudo apt-get install -y clang
+      - name: Test under ASan+UBSan
+        env:
+          CC: clang
+          CFLAGS: -O1 -g -fsanitize=address,undefined -fno-omit-frame-pointer -Wall
+          LDFLAGS: -fsanitize=address,undefined
+        run: make clean && make test
